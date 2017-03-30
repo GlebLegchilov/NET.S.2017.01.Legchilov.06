@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
 
 namespace Task1
 {
-    public class Polynomial
+    public sealed class Polynomial
     {
+        public static double epsilon = 0.00000001;
+
         private int power;
         private double[] cof;
 
@@ -15,11 +15,15 @@ namespace Task1
         {
             get
             {
-                return power;
-            }
-            private set
-            {               
-                power = value;
+                if (cof.Length == 1)
+                    return 0;
+                int i;
+                for (i = cof.Length - 1; i >= 0; i-- )
+                {
+                    if (Math.Abs(cof[i]) > epsilon)
+                        break;
+                }
+                return i;
             }
         }
         public double[] Cof
@@ -30,44 +34,39 @@ namespace Task1
             }
             private set
             {
+                for (int i = value.Length - 1; i >= 0; i--)
+                    if (value[i] != 0 || i == 0)
+                    {
+                        power = i;
+                        break;
+                    }
+
                 cof = value;
+            }
+        }
+
+        public double this[int number]
+        {
+            get
+            {
+                if (power > cof.Length)
+                    throw new IndexOutOfRangeException();
+                return cof[power];
             }
         }
 
 
         #region Constructors
-        /// <summary>
-        /// Initializes a new instance of the zero-degree polynomial that is specified by coefficient
-        /// </summary>
-        /// <param name="a">Coefficient of zero-degree polynomial</param>
-        public Polynomial(double a)
-        {
-            Cof = new double[1] { a };
-            Power = 0;
 
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the first-degree polynomial that is specified by coefficients
-        /// </summary>
-        /// <param name="a">First coefficient of first-degree polynomial</param>
-        /// <param name="b">Second coefficient of first-degree polynomial</param>
-        public Polynomial(double a, double b)
+        static Polynomial()
         {
-            Cof = new double[2] { a, b };
-            Power = 1;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the first-degree polynomial that is specified by coefficients
-        /// </summary>
-        /// <param name="a">First coefficient of third-degree polynomial</param>
-        /// <param name="b">Second coefficient of third-degree polynomial</param>
-        /// <param name="c">Third coefficient of third-degree polynomial</param>
-        public Polynomial(double a, double b, double c)
-        {
-            Cof = new double[3] { a, b, c };
-            Power = 2;
+            try
+            {
+                epsilon = double.Parse(ConfigurationManager.AppSettings["epsilon"]);
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -80,20 +79,20 @@ namespace Task1
                 throw new ArgumentNullException(nameof(coefficients));
             if (coefficients.Length == 0)
             {
-                Power = 0;
+                power = 0;
                 Cof = new double[1] { 0 };
             }
             else {
-                Power = coefficients.Length - 1;
+                power = coefficients.Length - 1;
                 for (int i = coefficients.Length - 1; i >= 0; i--)
                     if (coefficients[i] != 0 || i == 0)
                     {
-                        Power = i;
+                        power = i;
                         break;
                     }
 
                 Cof = new double[power + 1];
-                Array.Copy(coefficients, this.cof, Power + 1);
+                Array.Copy(coefficients, this.cof, power + 1);
             }
         }
         #endregion
@@ -107,18 +106,18 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>New polynomial</returns>
-        public static Polynomial Add(Polynomial p1, Polynomial p2)
+        public static Polynomial Add(Polynomial lhs, Polynomial rhs)
         {   
-            if (p1 == null && p2 == null)
+            if (lhs == null && rhs == null)
                 return null;
-            if (p1 == null)
-                return new Polynomial(p2.Cof);
-            if (p2 == null)
-                return new Polynomial(p1.Cof);
-            double[] newCof = (p1.Power > p2.Power) ? (double[])p1.Cof.Clone() : (double[])p2.Cof.Clone();
-            int minPower = (p1.Power < p2.Power) ? p1.Power : p2.Power;
+            if (lhs == null)
+                return new Polynomial(rhs.Cof);
+            if (rhs == null)
+                return new Polynomial(lhs.Cof);
+            double[] newCof = (lhs.Power > rhs.Power) ? (double[])lhs.Cof.Clone() : (double[])rhs.Cof.Clone();
+            int minPower = (lhs.Power < rhs.Power) ? lhs.Power : rhs.Power;
             for (int i = 0; i < minPower + 1; i++)
-                newCof[i] = p1.Cof[i] + p2.Cof[i];
+                newCof[i] = lhs.Cof[i] + rhs.Cof[i];
             return new Polynomial(newCof);
         }
         /// <summary>
@@ -127,9 +126,9 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>New polynomial</returns>
-        public static Polynomial operator +(Polynomial p1, Polynomial p2)
+        public static Polynomial operator +(Polynomial lhs, Polynomial rhs)
         {
-            return Add(p1, p2);
+            return Add(lhs, rhs);
         }
         /// <summary>
         /// Multiply polynomial by minus one
@@ -161,15 +160,15 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>New polynomial</returns>
-        public static Polynomial Sub(Polynomial p1, Polynomial p2)
+        public static Polynomial Sub(Polynomial lhs, Polynomial rhs)
         {
-            if (p1 == null && p2 == null)
+            if (lhs == null && rhs == null)
                 return null;
-            if (p1 == null)
-                return new Polynomial(p2.Cof);
-            if (p2 == null)
-                return new Polynomial(p1.Cof);
-            return p1 + (-p2);
+            if (lhs == null)
+                return new Polynomial(rhs.Cof);
+            if (rhs == null)
+                return new Polynomial(lhs.Cof);
+            return lhs + (-rhs);
         }
         /// <summary>
         /// Sub two polynomial
@@ -177,9 +176,9 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>New polynomial</returns>
-        public static Polynomial operator -(Polynomial p1, Polynomial p2)
+        public static Polynomial operator -(Polynomial lhs, Polynomial rhs)
         {
-            return Sub(p1, p2);
+            return Sub(lhs, rhs);
         }
         #endregion
 
@@ -190,16 +189,16 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>New polynomial</returns>
-        public static Polynomial Multiplication(Polynomial p1, Polynomial p2)
+        public static Polynomial Multiplication(Polynomial lhs, Polynomial rhs)
         {
-            if (p1  == null || p2 == null)
+            if (lhs == null || rhs == null)
                 return null;
 
-            double[] newCof = new double[p1.Power + 1 + p2.Power + 1];
+            double[] newCof = new double[lhs.Power + 1 + rhs.Power + 1];
 
-            for (int i = 0; i <= p1.power; i++)
-                for (int j = 0; j <= p2.power; j++)
-                    newCof[i + j] += p1.Cof[i] * p2.Cof[j];
+            for (int i = 0; i <= lhs.power; i++)
+                for (int j = 0; j <= rhs.power; j++)
+                    newCof[i + j] += lhs.Cof[i] * rhs.Cof[j];
                 
             return new Polynomial(newCof);
 
@@ -210,9 +209,9 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>New polynomial</returns>
-        public static Polynomial operator *(Polynomial p1, Polynomial p2)
+        public static Polynomial operator *(Polynomial lhs, Polynomial rhs)
         {
-            return Multiplication(p1, p2);
+            return Multiplication(lhs, rhs);
         }
         #endregion
 
@@ -249,7 +248,7 @@ namespace Task1
         {
             if (ReferenceEquals(p, null)) return false;
             if (ReferenceEquals(this, p)) return true;
-            if (Power != p.Power) return false;
+            if (power != p.power) return false;
             for (int i = 0; i < this.power + 1; i++)
                 if (Cof[i] != p.Cof[i])
                     return false;
@@ -263,6 +262,10 @@ namespace Task1
         /// <returns></returns>
         public override bool Equals(object obj)
         {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+
+            if (obj.GetType() != this.GetType()) return false;
             return this.Equals(obj as Polynomial);
         }
 
@@ -272,11 +275,11 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second polynomial</param>
         /// <returns>Returns true if polynomials are equal</returns>
-        public static bool operator ==(Polynomial p1, Polynomial p2)
+        public static bool operator ==(Polynomial lhs, Polynomial rhs)
         {
-            if (ReferenceEquals(p1, null) && ReferenceEquals(p2, null)) return true;
-            if (ReferenceEquals(p1, null) || ReferenceEquals(p2, null)) return false;
-            return p1.Equals(p2);
+            if (ReferenceEquals(lhs, null) && ReferenceEquals(rhs, null)) return true;
+            if (ReferenceEquals(lhs, null) || ReferenceEquals(rhs, null)) return false;
+            return lhs.Equals(rhs);
         }
 
         /// <summary>
@@ -285,9 +288,9 @@ namespace Task1
         /// <param name="p1">First polynomial</param>
         /// <param name="p2">Second Polynomial</param>
         /// <returns>Returns true if polynomials are not equal</returns>
-        public static bool operator !=(Polynomial p1, Polynomial p2)
+        public static bool operator !=(Polynomial lhs, Polynomial rhs)
         {
-            return !(p1 == p2);
+            return !(lhs == rhs);
         }
 
         /// <summary>

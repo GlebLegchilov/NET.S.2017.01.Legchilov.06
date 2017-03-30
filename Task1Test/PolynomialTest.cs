@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using Task1;
 using NUnit.Framework;
 
@@ -7,12 +8,11 @@ namespace Task1Test
     [TestFixture]
     public class PolynomialTest
     {
-
-
+       
         [Test]
         public void Equals_ObjectAndThis()
         {
-            Polynomial a = new Polynomial(3, 2, 1);
+            Polynomial a = new Polynomial( 2, 1);
             bool expeexpectation = true, reality = a.Equals(a);
             Assert.AreEqual(expeexpectation, reality);
         }

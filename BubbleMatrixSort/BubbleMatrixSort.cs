@@ -3,127 +3,42 @@ using System.Linq;
 
 namespace Task2
 {
+    public interface IComparer
+    {
+        int Compare(int[] arr1, int[] arr2);
+ 
+    }
+
     /// <summary>
     /// Class sort matrix by bubble sort
     /// </summary>
     public static class BubbleMatrixSort
     {
-        #region SortByElementSum
         /// <summary>
-        /// Sorts in ascending order the sums of elements of rows of the matrix
+        /// Class sort matrix by choosen principle
         /// </summary>
-        /// <param name="matrix">Unsoted matrix</param>
-        public static void SortByElementSumUp(int[][] matrix)
+        /// <param name="matrix">Unsorted matrix</param>
+        /// <param name="comparer">Sort principle</param>
+        public static void Sort(int[][] matrix, IComparer comparer)
         {
-            if (matrix == null) throw new ArgumentNullException();
-
-            for(int i = 0; i < (matrix.Length - 1); i++)
-                for (int j = 0; j< (matrix.Length - 1 - i); j++)
-                    if ( matrix[j].Sum() > matrix[j+1].Sum())
-                    {
-                        int[] temp = matrix[j];
-                        matrix[j] = matrix[j+1];
-                        matrix[j + 1] = temp;
-                    } 
-        }
-
-        /// <summary>
-        /// Sorts in decreasing order the sums of elements of rows of the matrix
-        /// </summary>
-        /// <param name="matrix">Unsoted matrix</param>
-        public static void SortByElementSumDown(int[][] matrix)
-        {
-            if (matrix == null) throw new ArgumentNullException();
-
+            if ((matrix == null)||(comparer == null)) throw new ArgumentNullException();
             for (int i = 0; i < (matrix.Length - 1); i++)
                 for (int j = 0; j < (matrix.Length - 1 - i); j++)
-                    if (matrix[j].Sum() < matrix[j + 1].Sum())
-                    {
-                        int[] temp = matrix[j];
-                        matrix[j] = matrix[j + 1];
-                        matrix[j + 1] = temp;
-                    }
-        }
-        #endregion
-
-        #region SortByMaxElement
-        /// <summary>
-        /// Sorts in ascending order the maximum elements of rows of the matrix
-        /// </summary>
-        /// <param name="matrix">Unsoted matrix</param>
-        public static void SortByMaxElementUp(int[][] matrix)
-        {
-            if (matrix == null) throw new ArgumentNullException();
-
-            for (int i = 0; i < (matrix.Length - 1); i++)
-                for (int j = 0; j < (matrix.Length - 1 - i); j++)  
-                    if(matrix[j].Max() > matrix[j+1].Max())
-                    {
-                        int[] temp = matrix[j];
-                        matrix[j] = matrix[j + 1];
-                        matrix[j + 1] = temp;
-                    }
-
+                    if (comparer.Compare(matrix[j], matrix[j + 1]) > 0)
+                        Swap(ref matrix[j], ref matrix[j+1]);
         }
 
         /// <summary>
-        /// Sorts in decreasing order the maximum elements of rows of the matrix
+        /// Swap to elements
         /// </summary>
-        /// <param name="matrix">Unsoted matrix</param>
-        public static void SortByMaxElementDown(int[][] matrix)
+        /// <param name="arr1">First element</param>
+        /// <param name="arr2">Second element</param>
+        private static void Swap(ref int[] arr1, ref int[] arr2)
         {
-            if (matrix == null) throw new ArgumentNullException();
-
-            for (int i = 0; i < (matrix.Length - 1); i++)
-                for (int j = 0; j < (matrix.Length - 1 - i); j++)
-                    if (matrix[j].Max() < matrix[j + 1].Max())
-                    {
-                        int[] temp = matrix[j];
-                        matrix[j] = matrix[j + 1];
-                        matrix[j + 1] = temp;
-                    }
+            int[] temp = arr1;
+            arr1 = arr2;
+            arr2 = temp;
         }
-        #endregion
-
-        #region SortByMinElement
-        /// <summary>
-        /// Sorts in ascending order the minimum elements of rows of the matrix
-        /// </summary>
-        /// <param name="matrix">Unsoted matrix</param>
-        public static void SortByMinElementUp(int[][] matrix)
-        {
-            if (matrix == null) throw new ArgumentNullException();
-
-            for (int i = 0; i < (matrix.Length - 1); i++)
-                for (int j = 0; j < (matrix.Length - 1 - i); j++)
-                    if (matrix[j].Min() < matrix[j + 1].Min())
-                    {
-                        int[] temp = matrix[j];
-                        matrix[j] = matrix[j + 1];
-                        matrix[j + 1] = temp;
-                    }
-        }
-
-        /// <summary>
-        /// Sorts in decreasing order the minimum elements of rows of the matrix
-        /// </summary>
-        /// <param name="matrix">Unsoted matrix</param>
-        public static void SortByMinElementDown(int[][] matrix)
-        {
-            if (matrix == null) throw new ArgumentNullException();
-
-            for (int i = 0; i < (matrix.Length - 1); i++)
-                for (int j = 0; j < (matrix.Length - 1 - i); j++)
-                    if (matrix[j].Min() > matrix[j + 1].Min())
-                    {
-                        int[] temp = matrix[j];
-                        matrix[j] = matrix[j + 1];
-                        matrix[j + 1] = temp;
-                    }
-        }
-        #endregion
-
-
 
     }
 }
