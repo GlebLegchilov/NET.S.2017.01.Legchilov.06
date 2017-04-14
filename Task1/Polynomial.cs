@@ -15,14 +15,10 @@ namespace Task1
         {
             get
             {
-                if (cof.Length == 1)
-                    return 0;
+                if (cof.Length == 1) return 0;
                 int i;
                 for (i = cof.Length - 1; i >= 0; i-- )
-                {
-                    if (Math.Abs(cof[i]) > epsilon)
-                        break;
-                }
+                    if (Math.Abs(cof[i]) > epsilon) break; 
                 return i;
             }
         }
@@ -40,7 +36,6 @@ namespace Task1
                         power = i;
                         break;
                     }
-
                 cof = value;
             }
         }
@@ -49,8 +44,7 @@ namespace Task1
         {
             get
             {
-                if (power > cof.Length)
-                    throw new IndexOutOfRangeException();
+                if (power > cof.Length) throw new IndexOutOfRangeException();
                 return cof[power];
             }
         }
@@ -75,14 +69,14 @@ namespace Task1
         /// <param name="coefficients">Coefficients of polynomial, index is power of polinomal element</param>
         public Polynomial(params double[] coefficients)
         {
-            if (coefficients == null)
-                throw new ArgumentNullException(nameof(coefficients));
+            if (coefficients == null) throw new ArgumentNullException(nameof(coefficients));
             if (coefficients.Length == 0)
             {
                 power = 0;
                 Cof = new double[1] { 0 };
             }
-            else {
+            else
+            {
                 power = coefficients.Length - 1;
                 for (int i = coefficients.Length - 1; i >= 0; i--)
                     if (coefficients[i] != 0 || i == 0)
@@ -90,7 +84,6 @@ namespace Task1
                         power = i;
                         break;
                     }
-
                 Cof = new double[power + 1];
                 Array.Copy(coefficients, this.cof, power + 1);
             }
@@ -108,12 +101,9 @@ namespace Task1
         /// <returns>New polynomial</returns>
         public static Polynomial Add(Polynomial lhs, Polynomial rhs)
         {   
-            if (lhs == null && rhs == null)
-                return null;
-            if (lhs == null)
-                return new Polynomial(rhs.Cof);
-            if (rhs == null)
-                return new Polynomial(lhs.Cof);
+            if (lhs == null && rhs == null) return null;
+            if (lhs == null) return new Polynomial(rhs.Cof);
+            if (rhs == null) return new Polynomial(lhs.Cof);
             double[] newCof = (lhs.Power > rhs.Power) ? (double[])lhs.Cof.Clone() : (double[])rhs.Cof.Clone();
             int minPower = (lhs.Power < rhs.Power) ? lhs.Power : rhs.Power;
             for (int i = 0; i < minPower + 1; i++)
@@ -191,18 +181,14 @@ namespace Task1
         /// <returns>New polynomial</returns>
         public static Polynomial Multiplication(Polynomial lhs, Polynomial rhs)
         {
-            if (lhs == null || rhs == null)
-                return null;
-
+            if (lhs == null || rhs == null) return null;
             double[] newCof = new double[lhs.Power + 1 + rhs.Power + 1];
-
             for (int i = 0; i <= lhs.power; i++)
                 for (int j = 0; j <= rhs.power; j++)
-                    newCof[i + j] += lhs.Cof[i] * rhs.Cof[j];
-                
+                    newCof[i + j] += lhs.Cof[i] * rhs.Cof[j];               
             return new Polynomial(newCof);
-
         }
+
         /// <summary>
         /// Multiply two polynomials
         /// </summary>

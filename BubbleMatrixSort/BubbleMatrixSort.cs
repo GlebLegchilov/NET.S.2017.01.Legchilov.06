@@ -9,10 +9,10 @@ namespace Task2
  
     }
 
-    internal class compareByDelegate : IComparer
+    internal class CompareByDelegate : IComparer
     {
         private Comparison<int[]> compaprer;
-        public compareByDelegate(Comparison<int[]> del)
+        public CompareByDelegate(Comparison<int[]> del)
         {
             compaprer = del;
         }
@@ -25,7 +25,7 @@ namespace Task2
     /// <summary>
     /// Class sort matrix by bubble sort
     /// </summary>
-    public static class BubbleMatrixSortDtoI
+    public static class BubbleMatrixSortDeleagteToInterface
     {
         /// <summary>
         /// Class sort matrix by choosen principle
@@ -40,13 +40,16 @@ namespace Task2
                     if (comparer.Compare(matrix[j], matrix[j + 1]) > 0)
                         Swap(ref matrix[j], ref matrix[j+1]);
         }
+        /// <summary>
+        /// Class sort matrix by choosen principle
+        /// </summary>
+        /// <param name="matrix">Unsorted matrix</param>
+        /// <param name="comparer">Sort principle</param>
         public static void Sort(int[][] matrix, Comparison<int[]> comparer)
         {
             if ((matrix == null) || (comparer == null)) throw new ArgumentNullException();
-            Sort(matrix, (new compareByDelegate(comparer)));
+            Sort(matrix, (new CompareByDelegate(comparer)));
         }
-
-
 
         /// <summary>
         /// Swap to elements
@@ -66,7 +69,7 @@ namespace Task2
     /// <summary>
     /// Class sort matrix by bubble sort
     /// </summary>
-    public static class BubbleMatrixSortItoD
+    public static class BubbleMatrixSortInterfaceToDelegate
     {
         /// <summary>
         /// Class sort matrix by choosen principle
@@ -78,6 +81,11 @@ namespace Task2
             if ((matrix == null) || (comparer == null)) throw new ArgumentNullException();
             Sort(matrix, comparer.Compare);
         }
+        /// <summary>
+        /// Class sort matrix by choosen principle
+        /// </summary>
+        /// <param name="matrix">Unsorted matrix</param>
+        /// <param name="comparer">Sort principle</param>
         public static void Sort(int[][] matrix, Comparison<int[]> comparer)
         {
             if ((matrix == null) || (comparer == null)) throw new ArgumentNullException();
@@ -86,8 +94,6 @@ namespace Task2
                     if (comparer(matrix[j], matrix[j + 1]) > 0)
                         Swap(ref matrix[j], ref matrix[j + 1]);
         }
-
-
 
         /// <summary>
         /// Swap to elements

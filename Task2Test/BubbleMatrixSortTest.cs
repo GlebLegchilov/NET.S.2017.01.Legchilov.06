@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Task2;
-using static Task2.BubbleMatrixSortDtoI;
-using static Task2.BubbleMatrixSortItoD;
+using static Task2.BubbleMatrixSortInterfaceToDelegate;
+using static Task2.BubbleMatrixSortDeleagteToInterface;
 using NUnit.Framework;
 
 namespace Task2Test
@@ -27,21 +27,21 @@ namespace Task2Test
         [Test, TestCaseSource("SortByElementSumUp")]
         public void SortByElementSumUp_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortDtoI.Sort(reality, comparer);
+            BubbleMatrixSortDeleagteToInterface.Sort(reality, comparer);
             Assert.AreEqual(expeexpectation, reality);
         }
 
         [Test, TestCaseSource("SortByElementSumUp")]
         public void SortByElementSumUpItoD_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortItoD.Sort(reality, comparer);
+            BubbleMatrixSortInterfaceToDelegate.Sort(reality, comparer);
             Assert.AreEqual(expeexpectation, reality);
         }
 
         [Test, TestCaseSource("SortByElementSumUp")]
         public void SortByElementSumUpItoDDelegate_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortDtoI.Sort(reality, delegate (int[] arr1, int[] arr2)
+            BubbleMatrixSortDeleagteToInterface.Sort(reality, delegate (int[] arr1, int[] arr2)
             {
                 if ((arr1 == null) || (arr2 == null))
                     throw new ArgumentNullException();
@@ -59,7 +59,7 @@ namespace Task2Test
         [Test, TestCaseSource("SortByElementSumDown")]
         public void SortByElementSumDown_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortDtoI.Sort(reality, comparer);
+            BubbleMatrixSortDeleagteToInterface.Sort(reality, comparer);
             Assert.AreEqual(expeexpectation, reality);
         }
 
@@ -67,7 +67,7 @@ namespace Task2Test
         [Test, TestCaseSource("SortByElementSumUp")]
         public void SortByElementSumUpDelegate_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortDtoI.Sort(reality, delegate (int[] arr1, int[] arr2)
+            BubbleMatrixSortDeleagteToInterface.Sort(reality, delegate (int[] arr1, int[] arr2)
             {
                 if ((arr1 == null) || (arr2 == null))
                     throw new ArgumentNullException();
@@ -99,14 +99,14 @@ namespace Task2Test
         [Test, TestCaseSource("SortByMaxElementUp")]
         public void SortByMaxElementUp_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortDtoI.Sort(reality, comparer);
+            BubbleMatrixSortDeleagteToInterface.Sort(reality, comparer);
             Assert.AreEqual(expeexpectation, reality);
         }
 
         [Test, TestCaseSource("SortByMaxElementDown")]
         public void SortByMaxElementDown_PositivTest(int[][] reality, int[][] expeexpectation, IComparer comparer)
         {
-            BubbleMatrixSortDtoI.Sort(reality, comparer);
+            BubbleMatrixSortDeleagteToInterface.Sort(reality, comparer);
             Assert.AreEqual(expeexpectation, reality);
         }
         #endregion
